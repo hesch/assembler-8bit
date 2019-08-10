@@ -1,74 +1,46 @@
-#[derive(Copy, Clone)]
-enum ComponentReadAddress {
-    RegisterA = 0,
-    RegisterB,
-    RegisterC,
-    RegisterD,
-    ProgramCounter,
-    BankSelect,
-    Accumulator,
-    Memory,
-}
+const REGISTER_A: u8 = 0;
+const REGISTER_B: u8 = 1;
+const REGISTER_C: u8 = 2;
+const REGISTER_D: u8 = 3;
+const PROGRAM_COUNTER: u8 = 4;
+const BANK_SELECT: u8 = 5;
+const ACCUMULATOR: u8 = 6;
+const MEMORY_ADDRESS: u8 = 6;
+const MEMORY: u8 = 7;
+const OUTPUT: u8 = 8;
+const INSTRUCTION: u8 = 9;
 
-#[derive(Copy, Clone)]
-enum ComponentWriteAddress {
-    RegisterA = 0,
-    RegisterB,
-    RegisterC,
-    RegisterD,
-    ProgramCounter,
-    BankSelect,
-    MemoryAddress,
-    Memory,
-    Output,
-    Instruction,
-}
+// TODO: choose right values
+const SHIFT_ZERO: u8 = 0;
+const SHIFT_LEFT: u8 = 1;
+const SHIFT_RIGHT: u8 = 2;
+const UNCHANGED: u8 = 3;
 
-#[derive(Copy, Clone)]
-enum RegisterAddress {
-    RegisterA = 0,
-    RegisterB,
-    RegisterC,
-    RegisterD,
-}
-
-// TODO: order
-#[derive(Copy, Clone)]
-enum ShiftOperation {
-    Zero = 0,
-    ShiftLeft,
-    ShiftRight,
-    Unchanged,
-}
-
-// TODO: order
-#[derive(Copy, Clone)]
-enum LogicOperation {
-    Zero = 0,
-    And,
-    Or,
-    Xor,
-    A,
-    B,
-    NotA,
-    NotB,
-    Nand,
-    Nor,
-    Xnor,
-    AandNotB,
-    BandNotA,
-    AorNotB,
-    BorNotA,
-    One,
-}
+// TODO: choose right values
+const LOGIC_ZERO: u8 = 0;
+const AND: u8 = 0;
+const OR: u8 = 0;
+const XOR: u8 = 0;
+const NAND: u8 = 0;
+const NOR: u8 = 0;
+const XNOR: u8 = 0;
+const LOGIC_A: u8 = 0;
+const LOGIC_B: u8 = 0;
+const NOT_A: u8 = 0;
+const NOT_B: u8 = 0;
+const A_AND_NOT_B: u8 = 0;
+const B_AND_NOT_A: u8 = 0;
+const A_OR_NOT_B: u8 = 0;
+const B_OR_NOT_A: u8 = 0;
+const ONES: u8 = 15;
 
 pub struct ControlWord {
-    write_to: ComponentWriteAddress,
-    read_from: ComponentReadAddress,
-    alu_left: RegisterAddress,
-    alu_right: RegisterAddress,
-    alu_shift: ShiftOperation,
-    alu_logic: LogicOperation,
+    write_to: u8,
+    read_from: u8,
+    alu_left: u8,
+    alu_right: u8,
+    alu_shift: u8,
+    alu_logic: u8,
     alu_subtract: bool,
     program_counter_enable: bool,
     bank_select_enable: bool,
@@ -79,12 +51,12 @@ pub struct ControlWord {
 impl ControlWord {
     pub fn empty() -> ControlWord {
         ControlWord {
-            write_to: ComponentWriteAddress::RegisterA,
-            read_from: ComponentReadAddress::RegisterA,
-            alu_left: RegisterAddress::RegisterA,
-            alu_right: RegisterAddress::RegisterA,
-            alu_shift: ShiftOperation::Zero,
-            alu_logic: LogicOperation::Zero,
+            write_to: REGISTER_A,
+            read_from: REGISTER_A,
+            alu_left: REGISTER_A,
+            alu_right: REGISTER_A,
+            alu_shift: SHIFT_ZERO,
+            alu_logic: LOGIC_ZERO,
             alu_subtract: false,
             program_counter_enable: false,
             bank_select_enable: false,
@@ -94,18 +66,15 @@ impl ControlWord {
     }
 
     fn most_significant_bits(&self) -> u8 {
-        (self.write_to as u8) << 4 | (self.read_from as u8) << 1 | (self.alu_left as u8) >> 1
+        self.write_to << 4 | self.read_from << 1 | self.alu_left >> 1
     }
 
     fn middle_bits(&self) -> u8 {
-        (self.alu_left as u8) << 7
-            | (self.alu_right as u8) << 5
-            | (self.alu_shift as u8) << 3
-            | (self.alu_logic as u8) >> 1
+        self.alu_left << 7 | self.alu_right << 5 | self.alu_shift << 3 | self.alu_logic >> 1
     }
 
     fn least_significant_bits(&self) -> u8 {
-        (self.alu_logic as u8) << 7
+        self.alu_logic << 7
             | (self.alu_subtract as u8) << 6
             | (self.program_counter_enable as u8) << 5
             | (self.bank_select_enable as u8) << 4
@@ -119,12 +88,12 @@ mod tests {
     use super::*;
     fn standard_control_word() -> ControlWord {
         ControlWord {
-            write_to: ComponentWriteAddress::RegisterA,
-            read_from: ComponentReadAddress::RegisterA,
-            alu_left: RegisterAddress::RegisterA,
-            alu_right: RegisterAddress::RegisterA,
-            alu_shift: ShiftOperation::Zero,
-            alu_logic: LogicOperation::Zero,
+            write_to: REGISTER_A,
+            read_from: REGISTER_A,
+            alu_left: REGISTER_A,
+            alu_right: REGISTER_A,
+            alu_shift: SHIFT_ZERO,
+            alu_logic: LOGIC_ZERO,
             alu_subtract: false,
             program_counter_enable: false,
             bank_select_enable: false,
@@ -136,7 +105,7 @@ mod tests {
     #[test]
     fn msb_conversion_uses_write_to() {
         let control_word = ControlWord {
-            write_to: ComponentWriteAddress::Memory,
+            write_to: MEMORY,
             ..standard_control_word()
         };
 
@@ -146,7 +115,7 @@ mod tests {
     #[test]
     fn msb_conversion_uses_read_from() {
         let control_word = ControlWord {
-            read_from: ComponentReadAddress::RegisterD,
+            read_from: REGISTER_D,
             ..standard_control_word()
         };
 
@@ -156,7 +125,7 @@ mod tests {
     #[test]
     fn msb_conversion_uses_msb_from_alu_left() {
         let control_word = ControlWord {
-            alu_left: RegisterAddress::RegisterC,
+            alu_left: REGISTER_C,
             ..standard_control_word()
         };
 
@@ -166,10 +135,10 @@ mod tests {
     #[test]
     fn msb_conversion_does_not_use_other_fields() {
         let control_word = ControlWord {
-            alu_left: RegisterAddress::RegisterB,
-            alu_right: RegisterAddress::RegisterD,
-            alu_shift: ShiftOperation::Unchanged,
-            alu_logic: LogicOperation::One,
+            alu_left: REGISTER_B,
+            alu_right: REGISTER_D,
+            alu_shift: UNCHANGED,
+            alu_logic: ONES,
             alu_subtract: true,
             program_counter_enable: true,
             bank_select_enable: true,
@@ -184,7 +153,7 @@ mod tests {
     #[test]
     fn middle_bits_conversion_uses_lsb_from_alu_left() {
         let control_word = ControlWord {
-            alu_left: RegisterAddress::RegisterB,
+            alu_left: REGISTER_B,
             ..standard_control_word()
         };
 
@@ -194,7 +163,7 @@ mod tests {
     #[test]
     fn middle_bits_conversion_uses_alu_right() {
         let control_word = ControlWord {
-            alu_right: RegisterAddress::RegisterD,
+            alu_right: REGISTER_D,
             ..standard_control_word()
         };
 
@@ -204,7 +173,7 @@ mod tests {
     #[test]
     fn middle_bits_conversion_uses_alu_shift() {
         let control_word = ControlWord {
-            alu_shift: ShiftOperation::Unchanged,
+            alu_shift: UNCHANGED,
             ..standard_control_word()
         };
 
@@ -214,7 +183,7 @@ mod tests {
     #[test]
     fn middle_bits_conversion_uses_alu_logic() {
         let control_word = ControlWord {
-            alu_logic: LogicOperation::One,
+            alu_logic: ONES,
             ..standard_control_word()
         };
 
@@ -224,8 +193,8 @@ mod tests {
     #[test]
     fn middle_bits_conversion_uses_no_other_fields() {
         let control_word = ControlWord {
-            write_to: ComponentWriteAddress::BankSelect,
-            read_from: ComponentReadAddress::BankSelect,
+            write_to: BANK_SELECT,
+            read_from: BANK_SELECT,
             alu_subtract: true,
             program_counter_enable: true,
             bank_select_enable: true,
@@ -240,7 +209,7 @@ mod tests {
     #[test]
     fn lsb_conversion_uses_alu_logic() {
         let control_word = ControlWord {
-            alu_logic: LogicOperation::One,
+            alu_logic: ONES,
             ..standard_control_word()
         };
 
@@ -300,12 +269,12 @@ mod tests {
     #[test]
     fn lsb_conversion_does_not_use_other_flags() {
         let control_word = ControlWord {
-            write_to: ComponentWriteAddress::RegisterD,
-            read_from: ComponentReadAddress::RegisterD,
-            alu_left: RegisterAddress::RegisterB,
-            alu_right: RegisterAddress::RegisterD,
-            alu_shift: ShiftOperation::Unchanged,
-            alu_logic: LogicOperation::Or,
+            write_to: REGISTER_D,
+            read_from: REGISTER_D,
+            alu_left: REGISTER_B,
+            alu_right: REGISTER_D,
+            alu_shift: UNCHANGED,
+            alu_logic: OR,
             ..standard_control_word()
         };
 
