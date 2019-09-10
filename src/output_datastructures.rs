@@ -5,10 +5,10 @@ const REGISTER_D: u8 = 3;
 const PROGRAM_COUNTER: u8 = 4;
 const BANK_SELECT: u8 = 5;
 const ACCUMULATOR: u8 = 6;
-const MEMORY_ADDRESS: u8 = 7;
-const MEMORY: u8 = 8;
-const OUTPUT: u8 = 9;
-const INSTRUCTION: u8 = 10;
+const MEMORY_ADDRESS: u8 = 6;
+const MEMORY: u8 = 7;
+const OUTPUT: u8 = 8;
+const INSTRUCTION: u8 = 9;
 
 // TODO: choose right values
 const SHIFT_ZERO: u8 = 0;
