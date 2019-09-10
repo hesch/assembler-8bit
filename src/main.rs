@@ -1,26 +1,22 @@
+mod microcode;
 mod output_datastructures;
 
 use crate::output_datastructures::ControlWord;
 use nom::branch::alt;
-use nom::bytes::complete:: {
-    tag,
-    tag_no_case,
-    take_while_m_n,
-    take_while1,
-};
+use nom::bytes::complete::{tag, tag_no_case, take_while1, take_while_m_n};
 use nom::character::complete::digit1;
-use nom::sequence::preceded;
 use nom::character::complete::one_of;
 use nom::character::is_digit;
 use nom::character::is_hex_digit;
 use nom::character::is_space;
-use nom::IResult;
 use nom::error::ErrorKind;
+use nom::sequence::preceded;
 use nom::Err;
+use nom::IResult;
 
 fn identifier(input: &str) -> IResult<&str, &str> {
     one_of("_abcdefghijklmnopqrstuvwxyz")(input)?;
-   take_while1(|c: char| c.is_ascii_alphanumeric() || c == '_')(input)
+    take_while1(|c: char| c.is_ascii_alphanumeric() || c == '_')(input)
 }
 
 fn label_def(input: &str) -> IResult<&str, &str> {
@@ -43,7 +39,10 @@ fn dec_u8(input: &str) -> IResult<&str, u8> {
 }
 
 fn hex_u8(input: &str) -> IResult<&str, u8> {
-    let (remaining, number) = preceded(tag_no_case("0x"), take_while1(|c: char| is_hex_digit(c as u8)))(input)?;
+    let (remaining, number) = preceded(
+        tag_no_case("0x"),
+        take_while1(|c: char| is_hex_digit(c as u8)),
+    )(input)?;
     let number = match u8::from_str_radix(number, 16) {
         Ok(i) => i,
         _ => return Err(Err::Error((input, ErrorKind::Digit))),
@@ -52,7 +51,10 @@ fn hex_u8(input: &str) -> IResult<&str, u8> {
 }
 
 fn bin_u8(input: &str) -> IResult<&str, u8> {
-    let (remaining, number) = preceded(tag_no_case("0b"), take_while1(|c: char| c == '0' || c == '1'))(input)?;
+    let (remaining, number) = preceded(
+        tag_no_case("0b"),
+        take_while1(|c: char| c == '0' || c == '1'),
+    )(input)?;
     let number = match u8::from_str_radix(number, 2) {
         Ok(i) => i,
         _ => return Err(Err::Error((input, ErrorKind::Digit))),
@@ -137,7 +139,10 @@ mod tests {
         let input = "0x123";
         assert_eq!(hex_u8(input), Err(Err::Error((input, ErrorKind::Digit))));
         let input = "0xGE";
-        assert_eq!(hex_u8(input), Err(Err::Error(("GE", ErrorKind::TakeWhile1))));
+        assert_eq!(
+            hex_u8(input),
+            Err(Err::Error(("GE", ErrorKind::TakeWhile1)))
+        );
         let input = "0x12lakfsdj";
         assert_eq!(hex_u8(input), Ok(("lakfsdj", 0x12)));
         let input = "0x12 lakfsdj";
@@ -155,7 +160,10 @@ mod tests {
         let input = "0b10101010101010101010";
         assert_eq!(bin_u8(input), Err(Err::Error((input, ErrorKind::Digit))));
         let input = "0b32";
-        assert_eq!(bin_u8(input), Err(Err::Error(("32", ErrorKind::TakeWhile1))));
+        assert_eq!(
+            bin_u8(input),
+            Err(Err::Error(("32", ErrorKind::TakeWhile1)))
+        );
         let input = "0b11lakfsdj";
         assert_eq!(bin_u8(input), Ok(("lakfsdj", 0b11)));
         let input = "0b10101 lakfsdj";
@@ -193,7 +201,10 @@ mod tests {
     #[test]
     fn identifier_denies_numeric_beginning() {
         let input = "012345asdfdf6789 ";
-        assert_eq!(identifier(input), Err(Err::Error((input, ErrorKind::OneOf))));
+        assert_eq!(
+            identifier(input),
+            Err(Err::Error((input, ErrorKind::OneOf)))
+        );
     }
 
     #[test]
