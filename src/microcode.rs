@@ -51,7 +51,11 @@ enum Keyword {
 impl Keyword {
     fn controlWords(&self) -> Vec<ControlWord> {
         match self {
-            Keyword::Mov(f, t) => vec![],
+            Keyword::Mov(from, to) => ctrlVec!(ControlWord {
+                read_from: (*from) as u8,
+                write_to: (*to) as u8,
+                ..ControlWord::empty()
+            }),
             Keyword::Sub(op1, op2) => ctrlVec!(ControlWord {
                 read_from: ACCUMULATOR,
                 write_to: (*op1) as u8,
