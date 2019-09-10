@@ -1,51 +1,52 @@
-const REGISTER_A: u8 = 0;
-const REGISTER_B: u8 = 1;
-const REGISTER_C: u8 = 2;
-const REGISTER_D: u8 = 3;
-const PROGRAM_COUNTER: u8 = 4;
-const BANK_SELECT: u8 = 5;
-const ACCUMULATOR: u8 = 6;
-const MEMORY_ADDRESS: u8 = 6;
-const MEMORY: u8 = 7;
-const OUTPUT: u8 = 8;
-const INSTRUCTION: u8 = 9;
+pub const REGISTER_A: u8 = 0;
+pub const REGISTER_B: u8 = 1;
+pub const REGISTER_C: u8 = 2;
+pub const REGISTER_D: u8 = 3;
+pub const PROGRAM_COUNTER: u8 = 4;
+pub const BANK_SELECT: u8 = 5;
+pub const ACCUMULATOR: u8 = 6;
+pub const MEMORY_ADDRESS: u8 = 6;
+pub const MEMORY: u8 = 7;
+pub const OUTPUT: u8 = 8;
+pub const INSTRUCTION: u8 = 9;
 
 // TODO: choose right values
-const SHIFT_ZERO: u8 = 0;
-const SHIFT_LEFT: u8 = 1;
-const SHIFT_RIGHT: u8 = 2;
-const UNCHANGED: u8 = 3;
+pub const SHIFT_ZERO: u8 = 0;
+pub const SHIFT_LEFT: u8 = 1;
+pub const SHIFT_RIGHT: u8 = 2;
+pub const UNCHANGED: u8 = 3;
 
 // TODO: choose right values
-const LOGIC_ZERO: u8 = 0;
-const AND: u8 = 0;
-const OR: u8 = 0;
-const XOR: u8 = 0;
-const NAND: u8 = 0;
-const NOR: u8 = 0;
-const XNOR: u8 = 0;
-const LOGIC_A: u8 = 0;
-const LOGIC_B: u8 = 0;
-const NOT_A: u8 = 0;
-const NOT_B: u8 = 0;
-const A_AND_NOT_B: u8 = 0;
-const B_AND_NOT_A: u8 = 0;
-const A_OR_NOT_B: u8 = 0;
-const B_OR_NOT_A: u8 = 0;
-const ONES: u8 = 15;
+pub const LOGIC_ZERO: u8 = 0;
+pub const AND: u8 = 0;
+pub const OR: u8 = 0;
+pub const XOR: u8 = 0;
+pub const NAND: u8 = 0;
+pub const NOR: u8 = 0;
+pub const XNOR: u8 = 0;
+pub const LOGIC_A: u8 = 0;
+pub const LOGIC_B: u8 = 0;
+pub const NOT_A: u8 = 0;
+pub const NOT_B: u8 = 0;
+pub const A_AND_NOT_B: u8 = 0;
+pub const B_AND_NOT_A: u8 = 0;
+pub const A_OR_NOT_B: u8 = 0;
+pub const B_OR_NOT_A: u8 = 0;
+pub const ONES: u8 = 15;
 
+#[derive(Debug, PartialEq)]
 pub struct ControlWord {
-    write_to: u8,
-    read_from: u8,
-    alu_left: u8,
-    alu_right: u8,
-    alu_shift: u8,
-    alu_logic: u8,
-    alu_subtract: bool,
-    program_counter_enable: bool,
-    bank_select_enable: bool,
-    halt: bool,
-    step_reset: bool,
+    pub write_to: u8,
+    pub read_from: u8,
+    pub alu_left: u8,
+    pub alu_right: u8,
+    pub alu_shift: u8,
+    pub alu_logic: u8,
+    pub alu_subtract: bool,
+    pub program_counter_enable: bool,
+    pub bank_select_enable: bool,
+    pub halt: bool,
+    pub step_reset: bool,
 }
 
 impl ControlWord {
