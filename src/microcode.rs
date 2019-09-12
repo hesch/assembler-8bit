@@ -3,6 +3,9 @@ use crate::output_datastructures::{
     PROGRAM_COUNTER, SHIFT_LEFT, SHIFT_RIGHT, SHIFT_ZERO, UNCHANGED, XOR,
 };
 
+use gen_microcode_macro::gen_microcode;
+use gen_microcode::GenMicrocode;
+
 macro_rules! ctrlVec {
     ( $( $x:expr ),* ) => {
         {
@@ -31,6 +34,7 @@ macro_rules! ctrlVec {
     };
 }
 
+#[derive(gen_microcode)]
 enum Keyword {
     Mov(MovFrom, MovTo),
     Sub(GPR, GPR),
@@ -216,5 +220,10 @@ mod tests {
         let x = ctrlVec!(last_elem);
         assert_eq!(4, x.len());
         assert_eq!(ControlWord::empty(), x[2]);
+    }
+
+    #[test]
+    fn test() {
+        Keyword::test();
     }
 }
