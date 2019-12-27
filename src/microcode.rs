@@ -3,10 +3,10 @@ use crate::output_datastructures::{
     PROGRAM_COUNTER, SHIFT_LEFT, SHIFT_RIGHT, SHIFT_ZERO, UNCHANGED, XOR,
 };
 
-use gen_microcode_macro::gen_microcode;
 use gen_microcode::GenMicrocode;
+use gen_microcode_macro::gen_microcode;
 
-macro_rules! ctrlVec {
+macro_rules! ctrl_vec {
     ( $( $x:expr ),* ) => {
         {
             vec!(
@@ -53,14 +53,14 @@ enum Keyword {
 }
 
 impl Keyword {
-    fn controlWords(&self) -> Vec<ControlWord> {
+    fn control_words(&self) -> Vec<ControlWord> {
         match self {
-            Keyword::Mov(from, to) => ctrlVec!(ControlWord {
+            Keyword::Mov(from, to) => ctrl_vec!(ControlWord {
                 read_from: (*from) as u8,
                 write_to: (*to) as u8,
                 ..ControlWord::empty()
             }),
-            Keyword::Sub(op1, op2) => ctrlVec!(ControlWord {
+            Keyword::Sub(op1, op2) => ctrl_vec!(ControlWord {
                 read_from: ACCUMULATOR,
                 write_to: (*op1) as u8,
                 alu_left: (*op1) as u8,
@@ -70,7 +70,7 @@ impl Keyword {
                 alu_logic: LOGIC_B,
                 ..ControlWord::empty()
             }),
-            Keyword::Add(op1, op2) => ctrlVec!(ControlWord {
+            Keyword::Add(op1, op2) => ctrl_vec!(ControlWord {
                 read_from: ACCUMULATOR,
                 write_to: (*op1) as u8,
                 alu_left: (*op1) as u8,
@@ -79,7 +79,7 @@ impl Keyword {
                 alu_logic: LOGIC_B,
                 ..ControlWord::empty()
             }),
-            Keyword::And(op1, op2) => ctrlVec!(ControlWord {
+            Keyword::And(op1, op2) => ctrl_vec!(ControlWord {
                 read_from: ACCUMULATOR,
                 write_to: (*op1) as u8,
                 alu_left: (*op1) as u8,
@@ -88,7 +88,7 @@ impl Keyword {
                 alu_shift: SHIFT_ZERO,
                 ..ControlWord::empty()
             }),
-            Keyword::Or(op1, op2) => ctrlVec!(ControlWord {
+            Keyword::Or(op1, op2) => ctrl_vec!(ControlWord {
                 read_from: ACCUMULATOR,
                 write_to: (*op1) as u8,
                 alu_left: (*op1) as u8,
@@ -97,7 +97,7 @@ impl Keyword {
                 alu_shift: SHIFT_ZERO,
                 ..ControlWord::empty()
             }),
-            Keyword::Xor(op1, op2) => ctrlVec!(ControlWord {
+            Keyword::Xor(op1, op2) => ctrl_vec!(ControlWord {
                 read_from: ACCUMULATOR,
                 write_to: (*op1) as u8,
                 alu_left: (*op1) as u8,
@@ -106,7 +106,7 @@ impl Keyword {
                 alu_shift: SHIFT_ZERO,
                 ..ControlWord::empty()
             }),
-            Keyword::Cmp(op1, op2) => ctrlVec!(ControlWord {
+            Keyword::Cmp(op1, op2) => ctrl_vec!(ControlWord {
                 alu_left: (*op1) as u8,
                 alu_right: (*op2) as u8,
                 alu_subtract: true,
@@ -114,7 +114,7 @@ impl Keyword {
                 alu_logic: LOGIC_B,
                 ..ControlWord::empty()
             }),
-            Keyword::Shl(op1) => ctrlVec!(ControlWord {
+            Keyword::Shl(op1) => ctrl_vec!(ControlWord {
                 read_from: ACCUMULATOR,
                 write_to: (*op1) as u8,
                 alu_left: (*op1) as u8,
@@ -122,7 +122,7 @@ impl Keyword {
                 alu_logic: LOGIC_ZERO,
                 ..ControlWord::empty()
             }),
-            Keyword::Shr(op1) => ctrlVec!(ControlWord {
+            Keyword::Shr(op1) => ctrl_vec!(ControlWord {
                 read_from: ACCUMULATOR,
                 write_to: (*op1) as u8,
                 alu_left: (*op1) as u8,
@@ -130,7 +130,7 @@ impl Keyword {
                 alu_logic: LOGIC_ZERO,
                 ..ControlWord::empty()
             }),
-            Keyword::Jmp(_) => ctrlVec!(
+            Keyword::Jmp(_) => ctrl_vec!(
                 ControlWord {
                     read_from: PROGRAM_COUNTER,
                     write_to: MEMORY_ADDRESS,
@@ -142,13 +142,13 @@ impl Keyword {
                     ..ControlWord::empty()
                 }
             ),
-            Keyword::Jc(addr) => ctrlVec!(),
-            Keyword::Jz(addr) => ctrlVec!(),
+            Keyword::Jc(addr) => ctrl_vec!(),
+            Keyword::Jz(addr) => ctrl_vec!(),
             Keyword::Hlt => vec![ControlWord {
                 halt: true,
                 ..ControlWord::empty()
             }],
-            Keyword::Nop => ctrlVec!(),
+            Keyword::Nop => ctrl_vec!(),
         }
     }
 }
@@ -187,7 +187,7 @@ fn generate() {}
 mod tests {
     use super::*;
 
-    fn fetchCycle() -> Vec<ControlWord> {
+    fn fetch_cycle() -> Vec<ControlWord> {
         vec![
             ControlWord {
                 read_from: PROGRAM_COUNTER,
@@ -209,15 +209,15 @@ mod tests {
     }
 
     #[test]
-    fn ctrlVec_inserts_fetch_cycle() {
-        let x = ctrlVec!();
-        assert_eq!(fetchCycle(), x);
+    fn ctrl_vec_inserts_fetch_cycle() {
+        let x = ctrl_vec!();
+        assert_eq!(fetch_cycle(), x);
     }
 
     #[test]
-    fn ctrlVec_inserts_given_values_before_step_reset() {
+    fn ctrl_vec_inserts_given_values_before_step_reset() {
         let last_elem = ControlWord::empty();
-        let x = ctrlVec!(last_elem);
+        let x = ctrl_vec!(last_elem);
         assert_eq!(4, x.len());
         assert_eq!(ControlWord::empty(), x[2]);
     }
