@@ -1,0 +1,7 @@
+error: proc-macro derive panicked
+ --> $DIR/non_enum.rs:4:10
+  |
+4 | #[derive(FieldSize)]
+  |          ^^^^^^^^^
+  |
+  = help: message: FieldSize only works on Enums
