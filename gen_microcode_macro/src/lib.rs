@@ -32,6 +32,9 @@ pub fn gen_microcode_macro(input: TokenStream) -> TokenStream {
         impl GenMicrocode for #name {
             fn test() {
             }
+            fn microcode() -> [ControlWord] {
+                
+            }
         }
     };
 

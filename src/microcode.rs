@@ -5,6 +5,7 @@ use crate::output_datastructures::{
 
 use gen_microcode::GenMicrocode;
 use gen_microcode_macro::gen_microcode;
+use field_size::FieldSize;
 
 macro_rules! ctrl_vec {
     ( $( $x:expr ),* ) => {
@@ -153,7 +154,7 @@ impl Keyword {
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, FieldSize)]
 enum GPR {
     A = 0,
     B,
@@ -161,7 +162,7 @@ enum GPR {
     D,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, FieldSize)]
 enum MovFrom {
     A = 0,
     B = 1,
@@ -171,7 +172,7 @@ enum MovFrom {
     Acc = 6,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, FieldSize)]
 enum MovTo {
     A = 0,
     B = 1,
