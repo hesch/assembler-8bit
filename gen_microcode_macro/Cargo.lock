@@ -3,7 +3,12 @@
 [[package]]
 name = "gen_microcode"
 version = "0.1.0"
+
+[[package]]
+name = "gen_microcode_macro"
+version = "0.1.0"
 dependencies = [
+ "gen_microcode 0.1.0",
  "quote 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "syn 1.0.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

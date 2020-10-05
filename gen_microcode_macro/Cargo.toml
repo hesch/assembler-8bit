@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 syn = "1.0.5"
 quote = "1.0.2"
+gen_microcode = { path = "../gen_microcode" }
 
 [lib]
 proc-macro = true
