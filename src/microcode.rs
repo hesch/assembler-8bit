@@ -5,6 +5,7 @@ use crate::output_datastructures::{
 
 use gen_microcode::GenMicrocode;
 use gen_microcode_macro::gen_microcode;
+use field_size_macro::FieldSize;
 use field_size::FieldSize;
 
 macro_rules! ctrl_vec {
