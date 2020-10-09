@@ -10,6 +10,19 @@ enum NoFieldsEnum {
     Variant5,
 }
 
+enum TestEnum {
+    V0 = 0,
+    V1
+}
+
+#[derive(gen_microcode)]
+enum FieldsEnum {
+    Variant1(TestEnum),
+/*    Variant2(NoFieldsEnum, NoFieldsEnum),
+    Variant4(u8),
+    Variant5(u8, i32),*/
+}
+
 #[test]
 fn returns_zero_on_first_variant() {
    assert_eq!(0u8, NoFieldsEnum::Variant1.into()); 
